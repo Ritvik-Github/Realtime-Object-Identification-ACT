@@ -1,4 +1,5 @@
 status = "";
+objects = [];
 function preload() {
     img = loadImage("image.jpg");
 }
@@ -11,7 +12,7 @@ function setup() {
 }
 
 function modelLoaded() {
-    console.log("ML")
+    console.log("ML");
     status = true;
     objectDetect.detect(img, function (error, results) {
         if (error) {
@@ -23,28 +24,25 @@ function modelLoaded() {
 }
 function draw() {
     image(img, 0, 0, 800, 500);
-    fill("red");
-    text("Dog", 100, 45);
-    //ref text(str, x, y, x2, y2)
-    //ref rect(x, y, w, h, [tl], [tr], [br], [bl])
-    noFill();
-    stroke("red");
-    rect(100, 50, 500, 300);
-    //||\\
-    fill("red");
-    text("Cat", 450, 220);
-    //ref text(str, x, y, x2, y2)
-    //ref rect(x, y, w, h, [tl], [tr], [br], [bl])
-    noFill();
-    stroke("red");
-    rect(450, 220, 200, 230);
 
+    if(status != ""){
+        for (i=0; i<objects.length; i++) {
+            document.getElementById("status").innerHTML = "Status: Objects Detected";
+
+            fill("red");
+            percent = floor(objects[i].confidence * 100);
+            text(objects[i].label + " " + percent + "%" + " " + objects[i].x, objects[i].y);
+            noFill();
+            stroke("red");
+            rect(objects[i].x,objects[i].y,objects[i].width, objects[i].height);
+        }
+    }
 }
 
 function gotResults() {
     if (error) {
         console.log(error);
-    } else {
-        console.log(results);
     }
+    console.log(results);
+    objects = results;
 }
